@@ -5,7 +5,7 @@ import cn.apisium.nekomaid.utils.Utils;
 import com.google.common.collect.EvictingQueue;
 import com.google.gson.Gson;
 import com.maxmind.geoip2.model.CityResponse;
-import ml.windleaf.wlkitsreforged.utils.FileUtil;
+import cn.apisium.nekomaid.utils.FileUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.World;
@@ -66,7 +66,7 @@ final class Dashboard implements Listener {
     @SuppressWarnings("deprecation")
     public Dashboard(NekoMaid main) {
         this.main = main;
-        if(Utils.hasWLKits()) playerTags = (HashMap<String, String>) FileUtil.Companion.loadHashMap(playerTagFilePath);
+        if(Utils.hasWLKits()) playerTags = (HashMap<String, String>) FileUtil.Companion.loadHashMapJSON(playerTagFilePath);
         Path file = new File(main.getDataFolder(), "status.json").toPath();
         try {
             if (!Files.exists(file)) Files.write(file, "[]".getBytes(StandardCharsets.UTF_8));

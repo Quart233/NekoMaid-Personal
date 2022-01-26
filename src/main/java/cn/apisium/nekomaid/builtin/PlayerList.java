@@ -2,7 +2,7 @@ package cn.apisium.nekomaid.builtin;
 
 import cn.apisium.nekomaid.NekoMaid;
 import cn.apisium.nekomaid.utils.Utils;
-import ml.windleaf.wlkitsreforged.utils.FileUtil;
+import cn.apisium.nekomaid.utils.FileUtil;
 import org.apache.commons.lang.ObjectUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -58,7 +58,7 @@ final class PlayerList {
     @SuppressWarnings({"deprecation", "ConstantConditions"})
     public static void init(NekoMaid main) {
         Server server = main.getServer();
-        if(Utils.hasWLKits()) playerTags = (HashMap<String, String>) FileUtil.Companion.loadHashMap(playerTagFilePath);
+        if(Utils.hasWLKits()) playerTags = (HashMap<String, String>) FileUtil.Companion.loadHashMapJSON(playerTagFilePath);
         main.onConnected(main, client -> client.onWithAck("playerList:fetchPage", args -> {
             Stream<OfflinePlayer> list;
             int page = (int) args[0], state = (int) args[1];
