@@ -135,6 +135,7 @@ public final class Utils {
         } catch (Throwable ignored) { }
     }
 
+    public static boolean hasWLKits() { return Bukkit.getPluginManager().getPlugin("WLKitsReforged") != null; }
     public static boolean hasNBTAPI() { return Bukkit.getPluginManager().getPlugin("NBTAPI") != null; }
 
     public static double getTPS() {

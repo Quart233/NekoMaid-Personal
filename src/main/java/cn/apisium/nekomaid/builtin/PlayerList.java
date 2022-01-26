@@ -2,11 +2,14 @@ package cn.apisium.nekomaid.builtin;
 
 import cn.apisium.nekomaid.NekoMaid;
 import cn.apisium.nekomaid.utils.Utils;
+import ml.windleaf.wlkitsreforged.utils.FileUtil;
 import org.apache.commons.lang.ObjectUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 
+import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -14,6 +17,8 @@ import java.util.stream.Stream;
 final class PlayerList {
     private static Statistic PLAY_ON_TICK;
     private static boolean canAssessOfflinePlayer;
+    private static final String playerTagFilePath = FileUtil.Companion.getPluginDir() + "WLKitsReforged" + File.separator + "playertags.data";;
+    private static HashMap<String, String> playerTags;
     static {
         try {
             PLAY_ON_TICK = Statistic.PLAY_ONE_MINUTE;
@@ -53,6 +58,7 @@ final class PlayerList {
     @SuppressWarnings({"deprecation", "ConstantConditions"})
     public static void init(NekoMaid main) {
         Server server = main.getServer();
+        if(Utils.hasWLKits()) playerTags = (HashMap<String, String>) FileUtil.Companion.loadHashMap(playerTagFilePath);
         main.onConnected(main, client -> client.onWithAck("playerList:fetchPage", args -> {
             Stream<OfflinePlayer> list;
             int page = (int) args[0], state = (int) args[1];
@@ -145,7 +151,8 @@ final class PlayerList {
             }
             PlayerData pd = new PlayerData();
             pd.online = p.isOnline();
-            pd.name = p.getName();
+            if(Utils.hasWLKits()) pd.name = playerTags.get(p.getUniqueId().toString()) + " " + p.getName();
+            if(!Utils.hasWLKits()) pd.name = p.getName();
             pd.ban = ban;
             pd.whitelisted = whiteList.contains(p);
             pd.playTime = getPlayerTime(p);

@@ -5,6 +5,7 @@ import cn.apisium.nekomaid.utils.Utils;
 import com.google.common.collect.EvictingQueue;
 import com.google.gson.Gson;
 import com.maxmind.geoip2.model.CityResponse;
+import ml.windleaf.wlkitsreforged.utils.FileUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.World;
@@ -33,6 +34,8 @@ final class Dashboard implements Listener {
     private int behindVersions = -3;
     private final WeakHashMap<Player, double[]> ipCache = new WeakHashMap<>();
     private static boolean canGetPing;
+    private static final String playerTagFilePath = FileUtil.Companion.getPluginDir() + "WLKitsReforged" + File.separator + "playertags.data";;
+    private static HashMap<String, String> playerTags;
 
     static {
         try {
@@ -63,6 +66,7 @@ final class Dashboard implements Listener {
     @SuppressWarnings("deprecation")
     public Dashboard(NekoMaid main) {
         this.main = main;
+        if(Utils.hasWLKits()) playerTags = (HashMap<String, String>) FileUtil.Companion.loadHashMap(playerTagFilePath);
         Path file = new File(main.getDataFolder(), "status.json").toPath();
         try {
             if (!Files.exists(file)) Files.write(file, "[]".getBytes(StandardCharsets.UTF_8));
@@ -126,7 +130,8 @@ final class Dashboard implements Listener {
         int i = 0;
         for (Player p : list) {
             PlayerInfo it = arr[i++] = new PlayerInfo();
-            it.name = p.getName();
+            if(Utils.hasWLKits()) it.name = playerTags.get(p.getUniqueId().toString()) + " " + p.getName();
+            if(!Utils.hasWLKits()) it.name = p.getName();
             if (canGetPing) it.ping = p.getPing();
             if (p.getAddress() != null) {
                 InetSocketAddress ip = p.getAddress();

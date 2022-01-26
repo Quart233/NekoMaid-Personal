@@ -62,6 +62,7 @@ import java.util.stream.Collectors;
 @Permissions(@Permission(name = "neko.maid.use"))
 @Dependency("Uniporter")
 @SoftDependency("Vault")
+@SoftDependency("WLKitsReforged")
 @SoftDependency("NBTAPI")
 @SoftDependency("OpenInv")
 @SoftDependency("PlugMan")
