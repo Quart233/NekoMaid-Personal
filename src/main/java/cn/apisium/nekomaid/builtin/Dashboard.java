@@ -34,7 +34,7 @@ final class Dashboard implements Listener {
     private int behindVersions = -3;
     private final WeakHashMap<Player, double[]> ipCache = new WeakHashMap<>();
     private static boolean canGetPing;
-    private static final String playerTagFilePath = FileUtil.Companion.getPluginDir() + "WLKitsReforged" + File.separator + "playertags.data";;
+    private static final String playerTagFilePath = FileUtil.Companion.getPluginDir() + "WLKitsReforged" + File.separator + "playertags.json";
     private static HashMap<String, String> playerTags;
 
     static {

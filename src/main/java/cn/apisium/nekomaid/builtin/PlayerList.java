@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 final class PlayerList {
     private static Statistic PLAY_ON_TICK;
     private static boolean canAssessOfflinePlayer;
-    private static final String playerTagFilePath = FileUtil.Companion.getPluginDir() + "WLKitsReforged" + File.separator + "playertags.data";;
+    private static final String playerTagFilePath = FileUtil.Companion.getPluginDir() + "WLKitsReforged" + File.separator + "playertags.json";
     private static HashMap<String, String> playerTags;
     static {
         try {
