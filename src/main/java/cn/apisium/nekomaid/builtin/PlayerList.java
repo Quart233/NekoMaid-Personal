@@ -6,6 +6,7 @@ import cn.apisium.nekomaid.utils.FileUtil;
 import org.apache.commons.lang.ObjectUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.Arrays;
@@ -17,8 +18,7 @@ import java.util.stream.Stream;
 final class PlayerList {
     private static Statistic PLAY_ON_TICK;
     private static boolean canAssessOfflinePlayer;
-    private static final String playerTagFilePath = FileUtil.Companion.getPluginDir() + "WLKitsReforged" + File.separator + "playertags.json";
-    private static HashMap<String, String> playerTags;
+    private static NekoMaid nm;
     static {
         try {
             PLAY_ON_TICK = Statistic.PLAY_ONE_MINUTE;
@@ -57,8 +57,8 @@ final class PlayerList {
     }
     @SuppressWarnings({"deprecation", "ConstantConditions"})
     public static void init(NekoMaid main) {
+        nm = main;
         Server server = main.getServer();
-        if(Utils.hasWLKits()) playerTags = (HashMap<String, String>) FileUtil.Companion.loadHashMapJSON(playerTagFilePath);
         main.onConnected(main, client -> client.onWithAck("playerList:fetchPage", args -> {
             Stream<OfflinePlayer> list;
             int page = (int) args[0], state = (int) args[1];
@@ -142,6 +142,7 @@ final class PlayerList {
 
     private static Object[] mapPlayersToObject(int page, Set<OfflinePlayer> whiteList,
                                                BanList banList, Stream<OfflinePlayer> list) {
+        JSONObject playerTags = nm.getPlayerTags();
         return list.skip(page * 10L).limit(10).map(p -> {
             String ban = null, name = p.getName();
             if (name != null) {
@@ -151,8 +152,16 @@ final class PlayerList {
             }
             PlayerData pd = new PlayerData();
             pd.online = p.isOnline();
-            if(Utils.hasWLKits()) pd.name = playerTags.get(p.getUniqueId().toString()) + " " + p.getName();
-            if(!Utils.hasWLKits()) pd.name = p.getName();
+
+            if(Utils.hasWLKits()) {
+                String playerUUID = p.getUniqueId().toString();
+                boolean hasPlayerPrefix = playerTags.has(playerUUID);
+                if(hasPlayerPrefix) pd.name = playerTags.getString(playerUUID) + " " + p.getName();
+                else pd.name = p.getName();
+            } else {
+                pd.name = p.getName();
+            }
+
             pd.ban = ban;
             pd.whitelisted = whiteList.contains(p);
             pd.playTime = getPlayerTime(p);

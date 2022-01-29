@@ -1,6 +1,7 @@
 package cn.apisium.nekomaid;
 
 import cn.apisium.nekomaid.builtin.BuiltinPlugins;
+import cn.apisium.nekomaid.utils.FileUtil;
 import cn.apisium.nekomaid.utils.GeoIP;
 import cn.apisium.nekomaid.utils.OshiWrapper;
 import cn.apisium.nekomaid.utils.Utils;
@@ -42,6 +43,7 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.net.URLClassLoader;
 import java.net.URLEncoder;
@@ -79,6 +81,7 @@ public final class NekoMaid extends JavaPlugin implements Listener {
     public static NekoMaid INSTANCE;
     { INSTANCE = this; }
 
+    private static final String playerTagFilePath = FileUtil.Companion.getPluginDir() + "WLKitsReforged" + File.separator + "playertags.json";
     private final ArrayListMultimap<org.bukkit.plugin.Plugin, Consumer<Client>> connectListeners = ArrayListMultimap.create();
     private final HashMap<String, Map.Entry<org.bukkit.plugin.Plugin, NekoMaidCommand>> pluginCommands = new HashMap<>();
     private final HashMap<String, HashMap<String, AbstractMap.SimpleEntry<Consumer<Client>,
@@ -231,6 +234,14 @@ public final class NekoMaid extends JavaPlugin implements Listener {
         String head = getConfig().getString("head-url", "");
         if (skin.isEmpty()) GLOBAL_DATA.remove("headUrl");
         else GLOBAL_DATA.put("headUrl", skin);
+        boolean hasPlayerTags = GLOBAL_DATA.has("playerTags");
+        if(hasPlayerTags) GLOBAL_DATA.remove("playerTags");
+        if(Utils.hasWLKits()) GLOBAL_DATA.put("playerTags", FileUtil.Companion.loadHashMapJSON(playerTagFilePath));
+    }
+
+    public JSONObject getPlayerTags() {
+        if(Utils.hasWLKits()) return GLOBAL_DATA.getJSONObject("playerTags");
+        else return null;
     }
 
     private void setupCommands() {

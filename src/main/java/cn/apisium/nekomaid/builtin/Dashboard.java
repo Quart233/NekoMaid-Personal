@@ -13,7 +13,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.json.JSONObject;
 
+import javax.rmi.CORBA.Util;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.net.InetSocketAddress;
@@ -34,8 +36,7 @@ final class Dashboard implements Listener {
     private int behindVersions = -3;
     private final WeakHashMap<Player, double[]> ipCache = new WeakHashMap<>();
     private static boolean canGetPing;
-    private static final String playerTagFilePath = FileUtil.Companion.getPluginDir() + "WLKitsReforged" + File.separator + "playertags.json";
-    private static HashMap<String, String> playerTags;
+    private static JSONObject playerTags;
 
     static {
         try {
@@ -66,7 +67,6 @@ final class Dashboard implements Listener {
     @SuppressWarnings("deprecation")
     public Dashboard(NekoMaid main) {
         this.main = main;
-        if(Utils.hasWLKits()) playerTags = (HashMap<String, String>) FileUtil.Companion.loadHashMapJSON(playerTagFilePath);
         Path file = new File(main.getDataFolder(), "status.json").toPath();
         try {
             if (!Files.exists(file)) Files.write(file, "[]".getBytes(StandardCharsets.UTF_8));
@@ -125,13 +125,22 @@ final class Dashboard implements Listener {
     }
 
     private void refresh() {
+        JSONObject playerTags = main.getPlayerTags();
         Collection<? extends Player> list = Bukkit.getOnlinePlayers();
         PlayerInfo[] arr = new PlayerInfo[list.size()];
         int i = 0;
         for (Player p : list) {
             PlayerInfo it = arr[i++] = new PlayerInfo();
-            if(Utils.hasWLKits()) it.name = playerTags.get(p.getUniqueId().toString()) + " " + p.getName();
-            if(!Utils.hasWLKits()) it.name = p.getName();
+
+            if(Utils.hasWLKits()) {
+                String playerUUID = p.getUniqueId().toString();
+                boolean hasPlayerPrefix = playerTags.has(playerUUID);
+                if(hasPlayerPrefix) it.name = playerTags.getString(playerUUID) + " " + p.getName();
+                else it.name = p.getName();
+            } else {
+                it.name = p.getName();
+            }
+
             if (canGetPing) it.ping = p.getPing();
             if (p.getAddress() != null) {
                 InetSocketAddress ip = p.getAddress();
