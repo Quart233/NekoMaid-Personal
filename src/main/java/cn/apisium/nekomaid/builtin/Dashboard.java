@@ -53,7 +53,7 @@ final class Dashboard implements Listener {
         public int chunks;
     }
     private final static class PlayerInfo {
-        public String name, ip;
+        public String displayName, name, ip;
         public int ping;
         public double[] loc;
     }
@@ -135,10 +135,12 @@ final class Dashboard implements Listener {
             if(Utils.hasWLKits()) {
                 String playerUUID = p.getUniqueId().toString();
                 boolean hasPlayerPrefix = playerTags.has(playerUUID);
-                if(hasPlayerPrefix) it.name = playerTags.getString(playerUUID) + " " + p.getName();
-                else it.name = p.getName();
+                if(hasPlayerPrefix) it.displayName = playerTags.getString(playerUUID) + " " + p.getName();
+                else it.displayName = p.getName();
+                it.name = p.getName();
             } else {
                 it.name = p.getName();
+                it.displayName = p.getName();
             }
 
             if (canGetPing) it.ping = p.getPing();

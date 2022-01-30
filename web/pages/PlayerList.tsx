@@ -263,7 +263,7 @@ const Players: React.FC = () => {
               <TableCell sx={{ cursor: 'pointer', padding: theme => theme.spacing(1, 1, 1, 2) }} onClick={() => his.push('/NekoMaid/playerList/' + it.name)}>
                 <Avatar src={getSkin(globalData, it.name, true)} imgProps={{ crossOrigin: 'anonymous', style: { width: 40, height: 40 } }} variant='rounded' />
               </TableCell>
-              <TableCell>{it.name}</TableCell>
+              <TableCell>{it.displayName}</TableCell>
               <TableCell align='right'>{dayjs.duration(it.playTime / 20, 'seconds').humanize()}</TableCell>
               <TableCell align='right'>{dayjs(it.lastOnline).fromNow()}</TableCell>
               <TableCell align='right'>

@@ -39,7 +39,7 @@ final class PlayerList {
         public long lastOnline, firstPlay;
     }
     private static final class PlayerData {
-        public String name, ban;
+        public String displayName, name, ban;
         public boolean whitelisted, online;
         public int playTime;
         public long lastOnline;
@@ -156,10 +156,12 @@ final class PlayerList {
             if(Utils.hasWLKits()) {
                 String playerUUID = p.getUniqueId().toString();
                 boolean hasPlayerPrefix = playerTags.has(playerUUID);
-                if(hasPlayerPrefix) pd.name = playerTags.getString(playerUUID) + " " + p.getName();
-                else pd.name = p.getName();
+                if(hasPlayerPrefix) pd.displayName = playerTags.getString(playerUUID) + " " + p.getName();
+                else pd.displayName = p.getName();
+                pd.name = p.getName();
             } else {
                 pd.name = p.getName();
+                pd.displayName = p.getName();
             }
 
             pd.ban = ban;

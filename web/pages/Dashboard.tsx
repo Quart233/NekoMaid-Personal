@@ -23,7 +23,7 @@ import lang from '../../languages'
 import isEqual from 'lodash/isEqual'
 
 interface Status { time: number, players: number, tps: number, entities: number, chunks: number }
-interface Player { name: string, ip?: string, loc?: [number, number] }
+interface Player { displayName: string, name: string, ip?: string, loc?: [number, number] }
 interface CurrentStatus {
   players: Array<string | Player>
   mspt: number
@@ -67,6 +67,7 @@ const Players: React.FC<{ players?: CurrentStatus['players'] }> = React.memo(({ 
           {players
             ? players.slice((page - 1) * 8, page * 8).map(p => {
               const name = typeof p === 'string' ? p : p.name
+              const displayName = typeof p === 'string' ? p : p.displayName
               return <Tooltip key={name} title={'IP: ' + ((p as any).ip || lang.unknown)}>
                 <ListItem
                   secondaryAction={<>
@@ -94,7 +95,7 @@ const Players: React.FC<{ players?: CurrentStatus['players'] }> = React.memo(({ 
                       variant='rounded'
                     />
                   </ListItemAvatar>
-                  <ListItemText primary={name} />
+                  <ListItemText primary={displayName} />
                 </ListItem>
               </Tooltip>
             })
