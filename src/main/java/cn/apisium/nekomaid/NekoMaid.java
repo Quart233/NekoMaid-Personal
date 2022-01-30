@@ -318,11 +318,12 @@ public final class NekoMaid extends JavaPlugin implements Listener {
     @NotNull
     public String getConnectUrl(@NotNull String token) {
         String custom = getConfig().getString("customAddress", "");
+        String domain = getConfig().getString("domain", "");
         int port = getConnectPort();
         String url = getConnectHostname(port, token);
         try { url = URLEncoder.encode(url, "UTF-8"); } catch (Throwable ignored) { }
         return custom.isEmpty()
-                ? (Uniporter.isSSLPort(port) ? "https" : "http") + "://maid.neko-craft.com/?" + url
+                ? (Uniporter.isSSLPort(port) ? "https" : "http") + (domain.isEmpty()? "://maid.neko-craft.com/?": String.format("://%s/?", domain)) + url
                 : custom.replace("{token}", token).replace("{hostname}", url);
     }
 
